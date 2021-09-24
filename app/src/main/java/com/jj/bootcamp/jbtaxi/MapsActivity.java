@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.MenuItem;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -47,14 +45,11 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
 
         bottomAppBar = (BottomAppBar) findViewById(R.id.bar);
         bottomAppBar.replaceMenu(R.menu.my_location_menu);
-        bottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.my_location) {
-                    //showCurrentPlace();
-                }
-                return true;
+        bottomAppBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.my_location) {
+                //showCurrentPlace();
             }
+            return true;
         });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
