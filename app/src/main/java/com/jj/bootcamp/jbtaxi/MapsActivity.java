@@ -33,6 +33,9 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
 
     private FusedLocationProviderClient fusedLocationClient;
 
+    private Location currentLocation;
+    private User user;
+
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,16 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void startLocationUpdates() {
+
     }
 
     /**
@@ -99,6 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
     public void onSuccess(Location location) {
         System.out.println("현재 위치 변경");
         if (location != null) {
+            currentLocation = location;
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         }
     }

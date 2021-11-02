@@ -9,7 +9,11 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 public class SplashActivity extends AppCompatActivity {
@@ -20,7 +24,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("서버에 연결할 수 없습니다.");
@@ -34,37 +37,15 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("jbtaxi_preference", MODE_PRIVATE);
         phoneNumber = sharedPreferences.getString("phone_number", null);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://14.55.30.222:3000";
+        startActivity(new Intent(getApplication(), MapsActivity.class));
+        finish();
 
-        if (phoneNumber != null) {
-            startActivity(new Intent(getApplication(), MapsActivity.class));
-            finish();
-        } else {
-            startActivity(new Intent(getApplication(), SignInActivity.class));
-            finish();
-        }
-
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        if (phoneNumber != null) {
-//                            startActivity(new Intent(getApplication(), SignInActivity.class));
-//                            finish();
-//                        } else {
-//                            startActivity(new Intent(getApplication(), MapsActivity.class));
-//                            finish();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        dialog.show();
-//                    }
-//                });
-//
-//        queue.add(stringRequest);
+//        if (phoneNumber == null) {
+//            startActivity(new Intent(getApplication(), SignInActivity.class));
+//            finish();
+//        } else {
+//            startActivity(new Intent(getApplication(), MapsActivity.class));
+//            finish();
+//        }
     }
 }
