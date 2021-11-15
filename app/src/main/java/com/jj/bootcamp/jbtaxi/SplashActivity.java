@@ -37,15 +37,11 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("jbtaxi_preference", MODE_PRIVATE);
         phoneNumber = sharedPreferences.getString("phone_number", null);
 
-        startActivity(new Intent(getApplication(), MapsActivity.class));
+        if (phoneNumber == null) {
+            startActivity(new Intent(getApplication(), SignInActivity.class));
+        } else {
+            startActivity(new Intent(getApplication(), MapsActivity.class));
+        }
         finish();
-
-//        if (phoneNumber == null) {
-//            startActivity(new Intent(getApplication(), SignInActivity.class));
-//            finish();
-//        } else {
-//            startActivity(new Intent(getApplication(), MapsActivity.class));
-//            finish();
-//        }
     }
 }

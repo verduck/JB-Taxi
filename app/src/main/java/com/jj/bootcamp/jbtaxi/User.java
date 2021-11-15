@@ -1,5 +1,7 @@
 package com.jj.bootcamp.jbtaxi;
 
+import com.jj.bootcamp.jbtaxi.domain.Taxi;
+
 import java.util.Date;
 
 public class User {

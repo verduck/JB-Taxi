@@ -1,4 +1,4 @@
-package com.jj.bootcamp.jbtaxi;
+package com.jj.bootcamp.jbtaxi.domain;
 
 public class Taxi {
     private int id;
