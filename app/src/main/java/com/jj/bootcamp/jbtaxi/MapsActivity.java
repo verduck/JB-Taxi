@@ -1,15 +1,20 @@
 package com.jj.bootcamp.jbtaxi;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.jj.bootcamp.jbtaxi.domain.User;
 
 public class MapsActivity extends FragmentActivity implements OnSuccessListener<Location>, OnMapReadyCallback {
 
@@ -32,6 +38,8 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
     private boolean locationPermissionGranted;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
 
     private Location currentLocation;
     private User user;
@@ -43,8 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, this);
+        user = getIntent().getParcelableExtra("user");
 
         bottomAppBar = (BottomAppBar) findViewById(R.id.bar);
         bottomAppBar.replaceMenu(R.menu.my_location_menu);
@@ -53,6 +60,14 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
                 //showCurrentPlace();
             }
             return true;
+        });
+        bottomAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
         });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -63,11 +78,19 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
     private void startLocationUpdates() {
-
     }
 
     /**
@@ -84,6 +107,22 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         // Add a marker in Sydney and move the camera
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, this);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+
+                }
+                currentLocation = locationResult.getLastLocation();
+            }
+        };
 
         getLocationPermission();
         mMap.setMyLocationEnabled(true);

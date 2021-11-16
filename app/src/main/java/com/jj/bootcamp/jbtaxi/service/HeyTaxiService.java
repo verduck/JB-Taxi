@@ -9,4 +9,7 @@ import retrofit2.http.POST;
 public interface HeyTaxiService {
     @POST("user/signup")
     Call<User> signUp(@Body User user);
+
+    @POST("user/signin")
+    Call<User> signIn(@Body User user);
 }

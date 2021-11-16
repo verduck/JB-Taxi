@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_gravity="bottom"
             app:fabAlignmentMode="center"
-            app:navigationIcon="@drawable/ic_baseline_menu_white_24"
+            app:navigationIcon="@drawable/ic_baseline_person_24"
             app:backgroundTint="@color/purple_500" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,6 +28,7 @@
             android:src="@drawable/ic_baseline_local_taxi_24"
             app:layout_anchor="@id/bar"
             app:fabSize="normal" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </fragment>

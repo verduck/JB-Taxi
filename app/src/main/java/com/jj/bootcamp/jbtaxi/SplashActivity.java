@@ -6,24 +6,35 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.jj.bootcamp.jbtaxi.domain.User;
+import com.jj.bootcamp.jbtaxi.service.HeyTaxiService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashActivity extends AppCompatActivity {
-
     private String phoneNumber;
     private Dialog dialog;
+    private Retrofit retrofit;
+    private HeyTaxiService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://14.55.30.117:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        service = retrofit.create(HeyTaxiService.class);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("서버에 연결할 수 없습니다.");
@@ -40,7 +51,30 @@ public class SplashActivity extends AppCompatActivity {
         if (phoneNumber == null) {
             startActivity(new Intent(getApplication(), SignInActivity.class));
         } else {
-            startActivity(new Intent(getApplication(), MapsActivity.class));
+            User user = new User();
+            user.setPhoneNumber(phoneNumber);
+            Call<User> call = service.signIn(user);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        User res = response.body();
+                        SharedPreferences sharedPreferences = getSharedPreferences("jbtaxi_preference", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("phone_number", res.getPhoneNumber());
+                        editor.commit();
+                        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                        intent.putExtra("user", res);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "서버에 연결할 수 없습니다", Toast.LENGTH_SHORT);
+                }
+            });
         }
         finish();
     }
