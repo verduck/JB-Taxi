@@ -11,30 +11,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.jj.bootcamp.jbtaxi.domain.User;
-import com.jj.bootcamp.jbtaxi.service.HeyTaxiService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashActivity extends AppCompatActivity {
     private String phoneNumber;
     private Dialog dialog;
-    private Retrofit retrofit;
-    private HeyTaxiService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://14.55.30.117:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        service = retrofit.create(HeyTaxiService.class);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("서버에 연결할 수 없습니다.");
@@ -53,7 +41,7 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             User user = new User();
             user.setPhoneNumber(phoneNumber);
-            Call<User> call = service.signIn(user);
+            Call<User> call = JBTaxiAPI.getInstance().getService().signIn(user);
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {

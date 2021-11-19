@@ -23,7 +23,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jj.bootcamp.jbtaxi.domain.Taxi;
 import com.jj.bootcamp.jbtaxi.domain.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapsActivity extends FragmentActivity implements OnSuccessListener<Location>, OnMapReadyCallback {
 
@@ -32,6 +39,8 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
     private GoogleMap mMap;
 
     private BottomAppBar bottomAppBar;
+    private ExtendedFloatingActionButton fabWait;
+    private FloatingActionButton fabCall;
 
     private static final int DEFAULT_ZOOM = 16;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -43,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
 
     private Location currentLocation;
     private User user;
+    private Taxi taxi;
 
     @SuppressLint("MissingPermission")
     @Override
@@ -50,10 +60,13 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
+        getLocationPermission();
         user = getIntent().getParcelableExtra("user");
 
         bottomAppBar = (BottomAppBar) findViewById(R.id.bar);
+        fabWait = (ExtendedFloatingActionButton) findViewById(R.id.fab_wait);
+        fabCall = (FloatingActionButton) findViewById(R.id.fab_call);
+
         bottomAppBar.replaceMenu(R.menu.my_location_menu);
         bottomAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.my_location) {
@@ -70,6 +83,12 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
             }
         });
 
+        if (taxi == null) {
+            fabWait.setVisibility(View.INVISIBLE);
+        } else {
+            fabWait.setVisibility(View.VISIBLE);
+        }
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -78,6 +97,13 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadUser();
+        loadTaxi();
     }
 
     @Override
@@ -149,10 +175,51 @@ public class MapsActivity extends FragmentActivity implements OnSuccessListener<
 
     @Override
     public void onSuccess(Location location) {
-        System.out.println("현재 위치 변경");
+        //System.out.println("현재 위치 변경");
         if (location != null) {
             currentLocation = location;
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         }
+    }
+
+    private void loadUser() {
+        JBTaxiAPI.getInstance().getService().getUser(user).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    user = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void loadTaxi() {
+        if (user != null) {
+            JBTaxiAPI.getInstance().getService().getTaxi(user).enqueue(new Callback<Taxi>() {
+                @Override
+                public void onResponse(Call<Taxi> call, Response<Taxi> response) {
+                    if (response.isSuccessful()) {
+                        taxi = response.body();
+                        if (taxi != null) {
+                            fabWait.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Taxi> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

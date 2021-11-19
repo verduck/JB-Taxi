@@ -11,39 +11,23 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginTop="30dp"
-        app:title="정보 변경"
+        app:title="택시 관리"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:menu="@menu/edit_profile_menu"/>
 
     <EditText
-        android:id="@+id/edit_phone_number"
+        android:id="@+id/edit_car_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:hint="핸드폰 번호"
-        android:enabled="false"/>
+        android:hint="차종"/>
 
     <EditText
-        android:id="@+id/edit_name"
+        android:id="@+id/edit_car_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:hint="이름"/>
-
-    <EditText
-        android:id="@+id/edit_birth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="생년월일 (yyyy-mm-dd)" />
-
-    <EditText
-        android:id="@+id/edit_certification_number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="택시운전자격증번호"
-        android:enabled="false"/>
+        android:hint="자동차 번호(12가3456)"/>
 
 </LinearLayout>

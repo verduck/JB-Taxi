@@ -20,7 +20,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.jj.bootcamp.jbtaxi.adapter.CountryCodesAdapter;
 import com.jj.bootcamp.jbtaxi.domain.User;
-import com.jj.bootcamp.jbtaxi.service.HeyTaxiService;
+import com.jj.bootcamp.jbtaxi.service.JBTaxiService;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -37,8 +37,6 @@ public class SignInActivity extends AppCompatActivity {
     private Spinner countryCode;
     private EditText phoneNumber;
     private FloatingActionButton nextFab;
-    private Retrofit retrofit;
-    private HeyTaxiService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +46,6 @@ public class SignInActivity extends AppCompatActivity {
         countryCode = (Spinner) findViewById(R.id.sign_up_country_code);
         phoneNumber = (EditText) findViewById(R.id.sign_up_phone_number);
         nextFab = (FloatingActionButton) findViewById(R.id.fab_sign_up_next);
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://14.55.30.117:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        service = retrofit.create(HeyTaxiService.class);
 
         final CountryCodesAdapter ccAdapter = new CountryCodesAdapter(this, android.R.layout.simple_list_item_1, android.R.layout.simple_spinner_dropdown_item);
         PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -106,7 +97,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 User user = new User();
                 user.setPhoneNumber(phoneNumber.getText().toString());
-                Call<User> call = service.signIn(user);
+                Call<User> call = JBTaxiAPI.getInstance().getService().signIn(user);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {

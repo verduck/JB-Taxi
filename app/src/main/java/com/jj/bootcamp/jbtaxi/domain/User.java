@@ -3,13 +3,13 @@ package com.jj.bootcamp.jbtaxi.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class User implements Parcelable {
     private Integer id;
     private String phoneNumber;
     private String name;
-    private Date birth;
+    private LocalDate birth;
     private String certificationNumber;
 
     public User() {}
@@ -22,7 +22,7 @@ public class User implements Parcelable {
         }
         phoneNumber = in.readString();
         name = in.readString();
-        birth = (Date) in.readSerializable();
+        birth = (LocalDate) in.readSerializable();
         certificationNumber = in.readString();
     }
 
@@ -62,11 +62,11 @@ public class User implements Parcelable {
         this.name = name;
     }
 
-    public Date getBirth() {
+    public LocalDate getBirth() {
         return birth;
     }
 
-    public void setBirth(Date birth) {
+    public void setBirth(LocalDate birth) {
         this.birth = birth;
     }
 

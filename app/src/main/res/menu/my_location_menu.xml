@@ -5,6 +5,7 @@
     <item android:id="@+id/my_location"
         android:title="my_location"
         android:icon="@drawable/ic_baseline_my_location_24"
+        android:iconTint="@color/black"
         app:showAsAction="always" />
 
 </menu>
